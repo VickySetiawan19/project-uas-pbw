@@ -3,13 +3,11 @@ include "load.php";
 
 session_start();
 
-// Periksa apakah user sudah login
 if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
     header("Location: login.php");
     exit();
 }
 
-// Ambil ID buku dari query string
 $id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
 if (!$id) {
@@ -17,7 +15,6 @@ if (!$id) {
 }
 
 try {
-    // Pastikan ID buku valid dengan mengambil data buku dan relasinya
     $stmt = $koneksi->prepare("
         SELECT buku.id, buku.judul, buku.penulis_id, penulis.nama as penulis
         FROM buku
@@ -31,17 +28,16 @@ try {
         die("Buku dengan ID ini tidak ditemukan atau sudah dihapus!");
     }
 
-    // Update kolom isdel untuk buku tanpa menyentuh updated_at
     $stmt = $koneksi->prepare("
         UPDATE buku 
         SET isdel = ?, deleted_by = ?, deleted_at = ? 
         WHERE id = ?
     ");
     $stmt->execute([
-        1,                          // Menandai sebagai dihapus
-        $_SESSION['userid'],        // ID pengguna yang menghapus
-        date("Y-m-d H:i:s"),        // Tanggal penghapusan
-        $id                         // ID buku
+        1,                          
+        $_SESSION['userid'],        
+        date("Y-m-d H:i:s"),        
+        $id                         
     ]);
 
     // Cek apakah penulis tidak memiliki buku lain
@@ -54,21 +50,20 @@ try {
     $jumlahBuku = $stmt->fetchColumn();
 
     if ($jumlahBuku == 0) {
-        // Soft delete penulis jika tidak ada buku lain
+
         $stmt = $koneksi->prepare("
             UPDATE penulis 
             SET isdel = ?, deleted_by = ?, deleted_at = ?
             WHERE id = ?
         ");
         $stmt->execute([
-            1,                          // Menandai sebagai dihapus
-            $_SESSION['userid'],        // ID pengguna yang menghapus
-            date("Y-m-d H:i:s"),        // Tanggal penghapusan
-            $buku['penulis_id']         // ID penulis
+            1,                          
+            $_SESSION['userid'],        
+            date("Y-m-d H:i:s"),        
+            $buku['penulis_id']         
         ]);
     }
 
-    // Redirect ke halaman utama setelah berhasil menghapus
     header("Location: home.php");
     exit();
 } catch (PDOException $e) {

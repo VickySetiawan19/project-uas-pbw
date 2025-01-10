@@ -2,20 +2,17 @@
 include "load.php";
 session_start();
 
-// Periksa apakah user sudah login
 if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
     header("Location: login.php");
     exit();
 }
 
-// Proses data jika form disubmit
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Ambil data dari form
     $judul = isset($_POST['judul']) ? trim($_POST['judul']) : null;
     $tahun = isset($_POST['tahun']) ? trim($_POST['tahun']) : null;
     $penulis = isset($_POST['penulis']) ? trim($_POST['penulis']) : null;
 
-    // Validasi data
     if (empty($judul) || empty($tahun) || empty($penulis)) {
         die("Judul, Tahun, dan Penulis tidak boleh kosong!");
     }
@@ -41,7 +38,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $penulisId = $penulisData['id'];
         }
 
-        // Tambahkan buku ke tabel buku
         $stmt = $koneksi->prepare("INSERT INTO buku (judul, tahun, penulis_id, created_by, created_at) VALUES (?, ?, ?, ?, ?)");
         $stmt->execute([
             $judul,
@@ -51,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             date("Y-m-d H:i:s")
         ]);
 
-        // Redirect ke halaman utama
         header("Location: home.php");
         exit();
     } catch (PDOException $e) {

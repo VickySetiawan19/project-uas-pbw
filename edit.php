@@ -3,13 +3,11 @@ include "load.php";
 
 session_start();
 
-// Periksa apakah user sudah login
 if (!isset($_SESSION['isLoggedIn']) || !$_SESSION['isLoggedIn']) {
     header("location: login.php");
     exit();
 }
 
-// Ambil ID buku dari query string
 $id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
 if (!$id) {
@@ -19,7 +17,7 @@ if (!$id) {
 }
 
 try {
-    // Ambil data buku berdasarkan ID
+    
     $stmt = $koneksi->prepare("
         SELECT buku.*, penulis.nama AS nama_penulis 
         FROM buku 
