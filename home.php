@@ -75,5 +75,18 @@ try {
 
     <!-- Bootstrap JS Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+
+     <div class="container mt-5">
+    <form id="commentForm">
+        <div class="mb-3">
+            <label for="comment" class="form-label">Komentar</label>
+            <textarea class="form-control" id="comment" rows="3" placeholder="Tulis komentar Anda" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Kirim</button>
+    </form>
+</div>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 </body>
 </html>
